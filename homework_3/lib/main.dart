@@ -86,6 +86,8 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+  bool get _isGameWon => _cards.every((card) => card.isFlipped);
+
   void _restartGame() {
     _initializeGame();
   }
@@ -103,40 +105,57 @@ class _GameScreenState extends State<GameScreen> {
           )
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-        ),
-        itemCount: _cards.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => _onCardTapped(_cards[index]),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _cards[index].isFlipped
-                  ? Card(
-                      key: ValueKey(_cards[index].id),
-                      color: Colors.white,
-                      child: Center(
-                        child: Text(
-                          _cards[index].symbol,
-                          style: const TextStyle(fontSize: 24),
-                        ),
-                      ),
-                    )
-                  : Card(
-                      key: ValueKey('${_cards[index].id}back'),
-                      color: Colors.blueAccent,
-                      child: const Center(
-                        child: Icon(Icons.help_outline, color: Colors.white),
-                      ),
-                    ),
+      body: Stack(
+        children: [
+          GridView.builder(
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
             ),
-          );
-        },
+            itemCount: _cards.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => _onCardTapped(_cards[index]),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _cards[index].isFlipped
+                      ? Card(
+                          key: ValueKey(_cards[index].id),
+                          color: Colors.white,
+                          child: Center(
+                            child: Text(
+                              _cards[index].symbol,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                        )
+                      : Card(
+                          key: ValueKey('${_cards[index].id}back'),
+                          color: Colors.blueAccent,
+                          child: const Center(
+                            child: Icon(Icons.help_outline, color: Colors.white),
+                          ),
+                        ),
+                ),
+              );
+            },
+          ),
+          if (_isGameWon)
+            Center(
+              child: AlertDialog(
+                title: const Text('You Win!'),
+                content: const Text('Click below to restart.'),
+                actions: [
+                  TextButton(
+                    onPressed: _restartGame,
+                    child: const Text('Restart'),
+                  )
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
