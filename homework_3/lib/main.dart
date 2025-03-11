@@ -41,7 +41,7 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _initializeGame() {
-    List<String> symbols = ['🍎', '🍌', '🍒', '🍇', '🍉', '🍓', '🍍', '🥝'];
+    List<String> symbols = ['💩', '👺', '🤡', '🦅', '🦖', '🦤', '🧠', '🥝'];
     symbols = [...symbols, ...symbols];
     symbols.shuffle();
     _cards = List.generate(
